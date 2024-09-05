@@ -1,5 +1,6 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movies_hood/api/api.dart';
+import 'package:movies_hood/models/movies.dart';
 import 'package:movies_hood/widgets/carousel_slider_view.dart';
 import 'package:movies_hood/widgets/vertical_card_view.dart';
 
@@ -11,6 +12,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Movies>> trendingMovies;
+
+  @override
+  void initState() {
+    super.initState();
+    trendingMovies = Api().getTrendingMovies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +48,27 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const CarouselSliderView(),
+              SizedBox(
+                child: FutureBuilder(
+                  future: trendingMovies,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(snapshot.error.toString()),
+                      );
+                    } else if (snapshot.hasData) {
+                      // final data = snapshot.data;
+                      return CarouselSliderView(
+                        snapshot: snapshot,
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -74,5 +103,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
