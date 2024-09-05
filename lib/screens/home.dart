@@ -13,11 +13,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Movies>> trendingMovies;
+  late Future<List<Movies>> topRatedMovies;
+  late Future<List<Movies>> upComingMovies;
 
   @override
   void initState() {
     super.initState();
     trendingMovies = Api().getTrendingMovies();
+    topRatedMovies = Api().getTopRatedMovies();
+    upComingMovies = Api().getUpComingMovies();
   }
 
   @override
@@ -73,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 20,
               ),
               Text(
-                'Top Rating Movies',
+                'Top Rated Movies',
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.inverseSurface,
                     fontSize: 20),
@@ -81,7 +85,28 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              const VerticalCardView(),
+              SizedBox(
+                child: FutureBuilder(
+                  future: topRatedMovies,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          snapshot.error.toString(),
+                        ),
+                      );
+                    } else if (snapshot.hasData) {
+                      return VerticalCardView(
+                        snapshot: snapshot,
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -95,7 +120,26 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              const VerticalCardView(),
+              SizedBox(
+                child: FutureBuilder(
+                  future: upComingMovies,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          snapshot.error.toString(),
+                        ),
+                      );
+                    } else if (snapshot.hasData) {
+                      return VerticalCardView(snapshot: snapshot);
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              )
             ],
           ),
         ),
