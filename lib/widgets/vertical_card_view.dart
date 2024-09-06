@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_hood/constants.dart';
+import 'package:movies_hood/screens/details.dart';
 
 class VerticalCardView extends StatelessWidget {
   const VerticalCardView({
@@ -20,18 +21,28 @@ class VerticalCardView extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemCount: dataList.length,
         itemBuilder: (context, index) {
-          final item = dataList[index];
+          final data = dataList[index];
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 220,
-                width: 150,
-                child: Image.network(
-                  filterQuality: FilterQuality.high,
-                  fit: BoxFit.fill,
-                  '${Constants.imagePath}${item.posterPath}',
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailsScreen(movies: data),
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  height: 220,
+                  width: 150,
+                  child: Image.network(
+                    filterQuality: FilterQuality.high,
+                    fit: BoxFit.fill,
+                    '${Constants.imagePath}${data.posterPath}',
+                  ),
                 ),
               ),
             ),
